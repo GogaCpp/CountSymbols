@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class CountSymbolsApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(CountSymbolsApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(CountSymbolsApplication.class, args);
+    }
 
 }
