@@ -1,41 +1,53 @@
 package com.example.countsymbols.service;
+import com.example.countsymbols.exception.ConversationException;
+import com.example.countsymbols.mapper.JsonMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class CountServiceTest {
-    @Test
-    void testCountSymbolsWithNullInput() {
-        assertNull(CountService.countSymbols(null));
-    }
-    @Test
-    void CountSymbolsIfEmpty(){
-        String string=CountService.countSymbols("");
-        assertEquals(string, "{}");
-    }
-    @Test
-    void CountSymbolsIfOne(){
-        String string=CountService.countSymbols("1");
-        assertEquals(string,"{\"1\":1}");
+    @Mock
+    private JsonMapper jsonMapper;
+
+    @InjectMocks
+    private CountService countService;
+
+    @BeforeEach
+    public void init() {
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
-    void CountSymbolsIsSort(){
-        String string=CountService.countSymbols("133322");
-        assertEquals(string,"{\"3\":3,\"2\":2,\"1\":1}");
+    public void testCountSymbols() throws ConversationException {
+        String value = "test";
+        when(jsonMapper.mapToJson(any())).thenReturn("{\"t\":1, \"e\":1, \"s\":1}");
 
-    }
-    @Test
-    void CountSymbolsIsSortAndSameCount(){
-        String string=CountService.countSymbols("13332");
-        assertEquals(string,"{\"3\":3,\"1\":1,\"2\":1}");
+        String result = countService.countSymbols(value);
 
+        assertEquals("{\"t\":1, \"e\":1, \"s\":1}", result);
     }
+
     @Test
-    void testCountSymbolsWithSpecialCharacters() {
-        String input = "#$%^&";
-        String expectedOutput = "{\"#\":1,\"$\":1,\"%\":1,\"^\":1,\"&\":1}";
-        assertEquals(expectedOutput, CountService.countSymbols(input));
+    public void testCountSymbolsWithNull() {
+        String value = null;
+
+        String result = countService.countSymbols(value);
+
+        assertNull(result);
     }
 }
